@@ -2,7 +2,7 @@ name: Deploy website
 on:
   push:
     branches:
-      - main  # activating push on main branch
+      - master  # activating push on master branch
 
 jobs:
   test:  # job
@@ -23,6 +23,8 @@ jobs:
   build:  # job
     needs: test
     runs-on: ubuntu-latest
+    outputs:
+      script-file: ${{ steps.publish.outputs.script-file }}
     steps:
       - name: Get code
         uses: actions/checkout@v3
@@ -32,6 +34,11 @@ jobs:
 
       - name: Build website
         run: npm run build
+
+      - name: publish js file name
+        id: publish
+        run: |
+          echo "script-file=$(find dist/assets/*.js -type f -exec basename {} \;)" >> $GITHUB_OUTPUT
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
@@ -49,6 +56,9 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: dist-files
+
+      - name: Output script file name
+        run: echo "${{ needs.build.outputs.script-file }}"
 
       - name: Output contents
         run: ls
