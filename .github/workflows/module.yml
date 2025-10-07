@@ -2,7 +2,7 @@ name: Deploy website
 on:
   push:
     branches:
-      - main  # activating push on main branch
+      - master  # activating push on main branch
 
 jobs:
   test:  # job
