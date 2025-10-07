@@ -2,7 +2,7 @@ name: Deploy website
 on:
   push:
     branches:
-      - master  # activating push on main branch
+      - master  # activating push on master branch
 
 jobs:
   test:  # job
@@ -13,6 +13,12 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
+
+      - name: Cache dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: deps-node-modules-${{ hashFiles('**/package-lock.json') }}
 
       - name: Lint code
         run: npm run lint
@@ -31,6 +37,12 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
+
+      - name: Cache dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: deps-node-modules-${{ hashFiles('**/package-lock.json') }}
 
       - name: Build website
         run: npm run build
